@@ -4,7 +4,7 @@
   "description": "provide services such as login, registration, change information, etc.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,13 @@
   "bugs": {
     "url": "https://github.com/EduardoPanzo/api-user-util/issues"
   },
-  "homepage": "https://github.com/EduardoPanzo/api-user-util#readme"
+  "homepage": "https://github.com/EduardoPanzo/api-user-util#readme",
+  "dependencies": {
+    "fastify": "^4.17.0",
+    "prisma": "^4.15.0"
+  },
+  "devDependencies": {
+    "tsx": "^3.12.7",
+    "typescript": "^5.0.4"
+  }
 }

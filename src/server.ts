@@ -1,15 +1,11 @@
-import { prisma } from "./lib/prisma";
+import fastify from "fastify";
 
-async function main() {
-  // ... you will write your Prisma Client queries here
-}
+import { userRoutes } from "./routes/user.routes";
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+const app = fastify();
+
+app.register(userRoutes);
+
+app.listen({ port: 3003 }).then(() => {
+  console.log("rodando na porta 3003");
+});

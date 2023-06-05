@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/EduardoPanzo/api-user-util#readme",
   "dependencies": {
+    "@fastify/cors": "^8.3.0",
+    "@fastify/jwt": "^7.0.0",
     "@prisma/client": "4.15.0",
     "fastify": "^4.17.0",
     "prisma": "^4.15.0",

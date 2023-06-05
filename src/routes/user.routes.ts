@@ -32,7 +32,7 @@ export async function userRoutes(app: FastifyInstance) {
     return users;
   });
 
-  app.get("/users/:email", async (request, response) => {
+  app.get("/user/:email", async (request, response) => {
     const paramsSchema = z.object({
       email: string().email(),
     });
@@ -44,15 +44,51 @@ export async function userRoutes(app: FastifyInstance) {
         email,
       },
       select: {
-        name: true,
         id: true,
+        name: true,
       },
     });
 
     if (!user) {
-      return response.status(401).send();
+      return response.status(404).send();
     }
 
     return user;
+  });
+
+  app.post("/user/login", async (request, response) => {
+    const bodyshema = z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+    });
+
+    const { email, password } = bodyshema.parse(request.body);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return response.status(404).send({ msg: "Email or Password is Wrong!" });
+    }
+
+    if (user.password !== password) {
+      return response.status(404).send({ msg: "Email or Password is Wrong!" });
+    }
+
+    const token = app.jwt.sign(
+      {
+        name: user.name,
+        email: user.email,
+      },
+      {
+        sub: user.id,
+        expiresIn: "3 days",
+      }
+    );
+
+    return { token };
   });
 }

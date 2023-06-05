@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { z } from "zod";
+import { string, z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function userRoutes(app: FastifyInstance) {
@@ -10,15 +10,48 @@ export async function userRoutes(app: FastifyInstance) {
       password: z.string().min(8),
     });
 
-    const { email, name, password } = bodyshema.parse(request.body);
+    const data = bodyshema.parse(request.body);
 
     const user = await prisma.user.create({
       data: {
-        email,
-        name,
-        password,
+        ...data,
       },
     });
+
+    return user;
+  });
+
+  app.get("/users", async (request, response) => {
+    const users = await prisma.user.findMany({
+      select: {
+        name: true,
+        id: true,
+      },
+    });
+
+    return users;
+  });
+
+  app.get("/users/:email", async (request, response) => {
+    const paramsSchema = z.object({
+      email: string().email(),
+    });
+
+    const { email } = paramsSchema.parse(request.params);
+
+    const user = await prisma.user.findUniqueOrThrow({
+      where: {
+        email,
+      },
+      select: {
+        name: true,
+        id: true,
+      },
+    });
+
+    if (!user) {
+      return response.status(401).send();
+    }
 
     return user;
   });

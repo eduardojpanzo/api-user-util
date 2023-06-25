@@ -18,18 +18,7 @@ export async function userRoutes(app: FastifyInstance) {
       },
     });
 
-    const token = app.jwt.sign(
-      {
-        name: user.name,
-        email: user.email,
-      },
-      {
-        sub: user.id,
-        expiresIn: "7 days",
-      }
-    );
-
-    return { token };
+    return user;
   });
 
   app.get("/users", async (request, response) => {
